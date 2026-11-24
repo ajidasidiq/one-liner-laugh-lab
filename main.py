@@ -16,10 +16,19 @@ ENTRY = (
 OUTPUT_PATH = "/output/entry.txt"
 
 
+def validate(line: str) -> str:
+    """Return the line if it passes the gate, else raise ValueError."""
+    if "\n" in line or "\r" in line:
+        raise ValueError("entry must be a single line")
+    if not line.strip():
+        raise ValueError("entry must not be only whitespace")
+    if not 1 <= len(line) <= 200:
+        raise ValueError(f"entry is {len(line)} chars, must be 1-200")
+    return line
+
+
 def main() -> None:
-    line = ENTRY.strip()
-    assert "\n" not in line, "entry must be a single line"
-    assert 1 <= len(line) <= 200, f"entry is {len(line)} chars, must be 1-200"
+    line = validate(ENTRY)
     assert line == ENTRY, "entry text changed unexpectedly"
     os.makedirs(os.path.dirname(OUTPUT_PATH), exist_ok=True)
     with open(OUTPUT_PATH, "w", encoding="utf-8", newline="") as f:
